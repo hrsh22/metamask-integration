@@ -34,8 +34,6 @@ const Home = () => {
     checkConnection();
   }, []);
 
-  const sendTo = "0x5991fd6Ecc5634C4de497b47Eb0Aa0065fffb214";
-  const amount = "1000000000000000000";
   async function sendToken() {
     // Check if MetaMask is installed
     console.log(walletAddress);
