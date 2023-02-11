@@ -57,7 +57,7 @@ const Home = () => {
     // Send the transaction
     await contract.methods
       .transfer(toValue, amountValue)
-      .send({ from: walletAddress });
+      .send({ from: window.ethereum.selectedAddress });
 
     alert("Transaction sent.");
     console.log("Transaction sent.");
