@@ -1,11 +1,12 @@
 import React from "react";
 import Web3 from "web3";
 import { useState, useEffect } from "react";
-import { contractABI, contractAddress } from "./Details";
+import { contractABI } from "./Details";
 
 const Home = () => {
   const [toValue, setToValue] = useState("");
   const [amountValue, setAmountValue] = useState("");
+  const [tokenAddress, setTokenAddress] = useState("");
   const [walletAddress, setWalletAddress] = useState(null);
 
   const handleToValue = (event) => {
@@ -14,8 +15,10 @@ const Home = () => {
   const handleAmountValue = (event) => {
     setAmountValue(event.target.value);
   };
+  const handleTokenAddress = (event) => {
+    setTokenAddress(event.target.value);
+  };
 
-  
   useEffect(() => {
     const checkConnection = async () => {
       if (window.ethereum) {
@@ -52,7 +55,7 @@ const Home = () => {
     // Create a Web3 object
     const web3 = new Web3(window.ethereum);
     // Load the ERC-20 contract
-    const contract = new web3.eth.Contract(contractABI, contractAddress);
+    const contract = new web3.eth.Contract(contractABI, tokenAddress);
 
     // Send the transaction
     await contract.methods
@@ -63,6 +66,7 @@ const Home = () => {
     console.log("Transaction sent.");
     setAmountValue("");
     setToValue("");
+    setTokenAddress("");
   }
 
   return (
@@ -70,7 +74,7 @@ const Home = () => {
       <div class="py-20 bg-cover bg-no-repeat bg-fixed h-screen">
         <div class="container m-auto text-center px-6 opacity-100">
           <h2 class="text-4xl font-bold mb-4 text-white">
-            Hey...Send STK Tokens!
+            Hey...Send ERC20 Tokens!
           </h2>
           <h3 class="text-2xl mb-8 text-gray-200">
             {/* <div>
@@ -78,22 +82,34 @@ const Home = () => {
             <p>To: {sendTo}</p> 
             <p>Amount:{amount}</p>
             </div> */}
-    <div><p>
-            <input
-              className="bg-gray border border-gray-400 m-3 p-2 w-100"
-              type="text"
-              value={toValue}
-              onChange={handleToValue}
-              placeholder="Enter Receiver Address"
-            /></p>
-            <p>
-            <input
-              className="bg-gray border border-gray-400 m-3 p-2 w-100"
-              type="text"
-              value={amountValue}
-              onChange={handleAmountValue}
-              placeholder="Enter amount in wei"
-            /></p>
+            <div>
+              <p>
+                <input
+                  className="bg-gray border border-gray-400 m-3 p-2 w-100"
+                  type="text"
+                  value={tokenAddress}
+                  onChange={handleTokenAddress}
+                  placeholder="Enter Token Address"
+                />
+              </p>
+              <p>
+                <input
+                  className="bg-gray border border-gray-400 m-3 p-2 w-100"
+                  type="text"
+                  value={toValue}
+                  onChange={handleToValue}
+                  placeholder="Enter Receiver Address"
+                />
+              </p>
+              <p>
+                <input
+                  className="bg-gray border border-gray-400 m-3 p-2 w-100"
+                  type="text"
+                  value={amountValue}
+                  onChange={handleAmountValue}
+                  placeholder="Enter amount in wei"
+                />
+              </p>
             </div>
           </h3>
           <button
