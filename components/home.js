@@ -59,7 +59,7 @@ const Home = () => {
 
     // Send the transaction
     await contract.methods
-      .transfer(toValue, amountValue)
+      .transfer(toValue, `${amountValue * (10 ** 18)}`)
       .send({ from: window.ethereum.selectedAddress });
 
     alert("Transaction sent.");
@@ -85,7 +85,7 @@ const Home = () => {
             <div>
               <p>
                 <input
-                  className="bg-gray border border-gray-400 m-3 p-2 w-100"
+                  class="bg-gray border text-center border-gray-400 m-3 p-2 w-5/12"
                   type="text"
                   value={tokenAddress}
                   onChange={handleTokenAddress}
@@ -94,7 +94,7 @@ const Home = () => {
               </p>
               <p>
                 <input
-                  className="bg-gray border border-gray-400 m-3 p-2 w-100"
+                  className="bg-gray border text-center border-gray-400 m-3 p-2 w-5/12"
                   type="text"
                   value={toValue}
                   onChange={handleToValue}
@@ -103,11 +103,11 @@ const Home = () => {
               </p>
               <p>
                 <input
-                  className="bg-gray border border-gray-400 m-3 p-2 w-100"
+                  className="bg-gray border text-center border-gray-400 m-3 p-2 w-5/12"
                   type="text"
                   value={amountValue}
                   onChange={handleAmountValue}
-                  placeholder="Enter amount in wei"
+                  placeholder="Enter amount in ether (upto 18 decimal places)"
                 />
               </p>
             </div>
