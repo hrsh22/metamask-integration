@@ -1,17 +1,30 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
+import { JsonRpcProvider } from 'ethers';
+
 
 
 const Navbar = () => {
+  const [web3, setWeb3] = useState(null);
+  const [account, setAccount] = useState(null);
 
-        const [walletAddress, setWalletAddress] = useState(null);
-      
-        useEffect(() => {
-          window.ethereum.enable().then(() => {
-            const address = window.ethereum.selectedAddress;
-            setWalletAddress(address);
-          });
-        }, []);
+  const infuraProjectId = '0184d3d3bd644a9788ed3c7eeda35b20';
+  const infuraRpcEndpoint = `https://goerli.infura.io/v3/${infuraProjectId}`;
+
+  const connectToWeb3 = async () => {
+    try {
+      // request access to user's MetaMask wallet
+      const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      setAccount(account);
+  
+      // create new Web3Provider instance with Infura as the RPC endpoint
+      const web3Provider = new JsonRpcProvider(infuraRpcEndpoint);
+      setWeb3(web3Provider);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
     
 
   return (
@@ -40,10 +53,10 @@ const Navbar = () => {
       {/* <!-- secondary nav --> */}
       <div class="hidden md:flex items-center space-x-1">
         {/* <a href="" class="py-5 px-3">Login</a> */}
-        {walletAddress ? (
-        <button href="" class="py-2 px-3 bg-yellow-400 hover:bg-yellow-300 text-yellow-900 hover:text-yellow-800 rounded transition duration-300">{walletAddress}</button>
+        {account ? (
+        <button href="" class="py-2 px-3 bg-yellow-400 hover:bg-yellow-300 text-yellow-900 hover:text-yellow-800 rounded transition duration-300">{account}</button>
       ) : (
-        <button href="" class="py-2 px-3 bg-yellow-400 hover:bg-yellow-300 text-yellow-900 hover:text-yellow-800 rounded transition duration-300" onClick={() => window.ethereum.enable()}>Connect Wallet</button>
+        <button href="" class="py-2 px-3 bg-yellow-400 hover:bg-yellow-300 text-yellow-900 hover:text-yellow-800 rounded transition duration-300" onClick={connectToWeb3}>Connect Wallet</button>
       )}
         
       </div>

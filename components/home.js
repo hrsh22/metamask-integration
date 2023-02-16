@@ -2,12 +2,14 @@ import React from "react";
 import Web3 from "web3";
 import { useState, useEffect } from "react";
 import { contractABI } from "./Details";
+import {ethers, JsonRpcProvider } from 'ethers';
 
 const Home = () => {
   const [toValue, setToValue] = useState("");
   const [amountValue, setAmountValue] = useState("");
   const [tokenAddress, setTokenAddress] = useState("");
   const [walletAddress, setWalletAddress] = useState(null);
+
 
   const handleToValue = (event) => {
     setToValue(event.target.value);
@@ -19,48 +21,24 @@ const Home = () => {
     setTokenAddress(event.target.value);
   };
 
-  useEffect(() => {
-    const checkConnection = async () => {
-      if (window.ethereum) {
-        try {
-          await window.ethereum.enable();
-          const address = window.ethereum.selectedAddress;
-          setWalletAddress(address);
-        } catch (error) {
-          console.error(error);
-        }
-      } else {
-        console.error("MetaMask is not available");
-      }
-    };
+  const [web3P, setWeb3] = useState(null);
 
-    checkConnection();
-  }, []);
+  
+  const infuraProjectId = process.env.NEXT_PUBLIC_INFURA_PROJECT_ID;
+  const infuraRpcEndpoint = `https://goerli.infura.io/v3/${infuraProjectId}`;
+  const provider = new JsonRpcProvider(infuraRpcEndpoint);
 
   async function sendToken() {
-    // Check if MetaMask is installed
-    console.log(walletAddress);
-    if (typeof window.ethereum === "undefined") {
-      alert("Please install MetaMask first.");
-      return;
-    }
 
-    // Connect to the MetaMask provider
-    window.addEventListener("load", async () => {
-      try {
-        await ethereum.enable();
-      } catch (error) {}
-    });
+    const contract = new ethers.Contract(tokenAddress, contractABI, "0xB78721b29c028B16ab25f4a2adE1d25fbf8B2d74");
 
-    // Create a Web3 object
-    const web3 = new Web3(window.ethereum);
-    // Load the ERC-20 contract
-    const contract = new web3.eth.Contract(contractABI, tokenAddress);
 
-    // Send the transaction
-    await contract.methods
-      .transfer(toValue, `${amountValue * (10 ** 18)}`)
-      .send({ from: window.ethereum.selectedAddress });
+  // Transfer tokens to the recipient
+  const tx = await contract.transfer(toValue, amountValue);
+  console.log(`Transaction hash: ${tx.hash}`);
+  
+  // Wait for the transaction to be mined
+  await tx.wait();
 
     alert("Transaction sent.");
     console.log("Transaction sent.");
@@ -118,6 +96,13 @@ const Home = () => {
           >
             Click to Send
           </button>
+
+          {/* <button
+            onClick={getABI}
+            class="bg-red-400 font-bold rounded-full py-4 px-8 shadow-lg uppercase tracking-wider hover:border-transparent hover:text-blue-500 hover:bg-gray-800 transition-all"
+          >
+            Test Button
+          </button> */}
         </div>
       </div>
     </div>
