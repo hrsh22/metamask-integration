@@ -3,11 +3,11 @@ import Web3 from "web3";
 import { useState, useEffect } from "react";
 import { contractABI } from "./Details";
 
-const Home = () => {
+const Home = (props) => {
   const [toValue, setToValue] = useState("");
   const [amountValue, setAmountValue] = useState("");
   const [tokenAddress, setTokenAddress] = useState("");
-  const [walletAddress, setWalletAddress] = useState(null);
+
 
   const handleToValue = (event) => {
     setToValue(event.target.value);
@@ -19,27 +19,11 @@ const Home = () => {
     setTokenAddress(event.target.value);
   };
 
-  useEffect(() => {
-    const checkConnection = async () => {
-      if (window.ethereum) {
-        try {
-          await window.ethereum.enable();
-          const address = window.ethereum.selectedAddress;
-          setWalletAddress(address);
-        } catch (error) {
-          console.error(error);
-        }
-      } else {
-        console.error("MetaMask is not available");
-      }
-    };
-
-    checkConnection();
-  }, []);
+ 
 
   async function sendToken() {
     // Check if MetaMask is installed
-    console.log(walletAddress);
+    // console.log(walletAddress);
     if (typeof window.ethereum === "undefined") {
       alert("Please install MetaMask first.");
       return;
@@ -60,13 +44,14 @@ const Home = () => {
     // Send the transaction
     await contract.methods
       .transfer(toValue, `${amountValue * (10 ** 18)}`)
-      .send({ from: window.ethereum.selectedAddress });
+      .send({ from: props.walletAddress });
 
     alert("Transaction sent.");
     console.log("Transaction sent.");
     setAmountValue("");
     setToValue("");
     setTokenAddress("");
+    
   }
 
   return (
